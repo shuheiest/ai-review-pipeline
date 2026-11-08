@@ -105,7 +105,7 @@ todo → done（着手せずに完了も可）
 ├── docs/
 │   ├── spec.md             # この仕様書
 │   ├── test-strategy.md    # テスト方針
-│   └── test-cases.md       # テストケース（本人が書く）
+│   └── test-cases.md       # テストケース（観点は本人、文章はClaude Code、確定は本人）
 ├── prisma/
 │   └── schema.prisma
 ├── scripts/
@@ -141,16 +141,16 @@ todo → done（着手せずに完了も可）
 - `domain` は、データベースやHonoに依存しない純粋な関数だけにする（テストしやすく、AIレビューも仕様と照らし合わせやすい）。現在時刻も読まず、「今日」は呼び出す側から受け取る
 - 依存の向きは `routes → usecase → domain`、`usecase → repository`、`repository → domain`（型だけ）。`domain` からは何も参照しない
 
-## 10. 本人が手で書く部分
+## 10. 本人が決める部分
 
-面接で深掘りされたときに自分の言葉で説明できるよう、「何が正しいか」を決める文書は本人が書く。実装とテストのコードはClaude Codeが書き、本人がレビューする。
+面接で深掘りされたときに自分の言葉で説明できるよう、「何が正しいか」を決める文書は、内容を本人が決め、Claude Codeが文章にまとめ、本人が確認して確定する。実装とテストのコードはClaude Codeが書き、本人がレビューする。
 
-| 本人が書く | Claude Codeが書く |
+| 本人が決める | Claude Codeが書く |
 |---|---|
 | この仕様書（特に2・3のルール） | `src/` の実装 |
 | テストケース `docs/test-cases.md`（`docs/test-strategy.md` 参照） | テストのコード（単体テスト・シナリオテスト） |
 
-AIは `docs/spec.md` と `docs/test-cases.md` を編集しない。変更が必要だと思ったら提案だけする。
+AIは本人の指示なしに `docs/spec.md` と `docs/test-cases.md` を編集しない。変更が必要だと思ったら提案だけする。
 
 ## 11. 完成の線（最小版）
 
