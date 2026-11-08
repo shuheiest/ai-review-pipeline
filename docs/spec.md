@@ -20,8 +20,8 @@
 | 項目 | 型 | 必須 | ルール |
 |---|---|---|---|
 | `id` | string | ○ | サーバーで自動採番 |
-| `title` | string | ○ | 前後の空白を除いて1〜50文字 |
-| `dueDate` | 日付（YYYY-MM-DD） | × | 正しい日付であること。作成時は過去の日付にできない。更新時は過去の日付も可 |
+| `title` | string | ○ | 前後の空白を除いて1〜50文字。文字数は見た目の文字（コードポイント）で数え、絵文字1つは1文字 |
+| `dueDate` | 日付（YYYY-MM-DD） | × | 正しい日付であること。作成時は過去の日付にできない。更新時は過去の日付も可。「過去」かどうかは日本時間で判定する |
 | `status` | `todo` / `in_progress` / `done` | ○ | 作成時は `todo`。変更は「3. ステータスの流れ」に従う |
 | `priority` | `low` / `medium` / `high` | ○ | 作成時の初期値は `medium` |
 | `createdAt` / `updatedAt` | 日時 | ○ | サーバーで自動設定 |
@@ -124,7 +124,7 @@ todo → done（着手せずに完了も可）
 │   │   │   └── *.test.ts
 │   │   ├── usecase/        # 作成・更新・ステータス変更などの処理
 │   │   ├── repository/     # データベースの読み書き（Prisma）
-│   │   └── routes/         # HonoのAPIの定義（Zodで入力チェック）
+│   │   └── routes/         # HonoのAPIの定義（domainのZodスキーマで入力チェック）
 │   ├── client/
 │   │   └── api.ts          # hc<AppType> で型付きのAPIクライアント
 │   └── components/         # 画面の部品
