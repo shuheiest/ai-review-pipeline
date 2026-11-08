@@ -44,3 +44,6 @@ next-env.d.ts
 
 # sqlite
 prisma/*.db*
+
+# ブラウザ確認の出力
+.playwright-mcp/
