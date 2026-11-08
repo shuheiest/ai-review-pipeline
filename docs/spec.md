@@ -139,7 +139,7 @@ todo → done（着手せずに完了も可）
 ```
 
 - `domain` は、データベースやHonoに依存しない純粋な関数だけにする（テストしやすく、AIレビューも仕様と照らし合わせやすい）。現在時刻も読まず、「今日」は呼び出す側から受け取る
-- 依存の向きは `routes → usecase → domain`、`usecase → repository`。`domain` からは何も参照しない
+- 依存の向きは `routes → usecase → domain`、`usecase → repository`、`repository → domain`（型だけ）。`domain` からは何も参照しない
 
 ## 10. 本人が手で書く部分
 
