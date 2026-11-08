@@ -42,5 +42,5 @@ export async function changeStatus(id: string, to: Status): Promise<Task> {
     throw new UsecaseError(409, `${task.status} から ${to} への変更は許可されていません`);
   }
   const completedAt = to === "done" ? new Date() : null;
-  return repo.update(id, { status: to, completedAt });
+  return repo.setStatus(id, to, completedAt);
 }

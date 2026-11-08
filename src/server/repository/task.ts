@@ -23,13 +23,8 @@ function toTask(row: TaskRow): Task {
 
 type Filter = { status?: Status; priority?: Priority };
 type CreateData = { title: string; dueDate?: string; priority: Priority };
-type UpdateData = {
-  title?: string;
-  dueDate?: string | null;
-  priority?: Priority;
-  status?: Status;
-  completedAt?: Date | null;
-};
+// 項目の更新ではステータスを変えられない。ステータスは setStatus だけが変える（docs/spec.md 3.）
+type UpdateData = { title?: string; dueDate?: string | null; priority?: Priority };
 
 export const taskRepository = {
   async findMany(where: Filter): Promise<Task[]> {
@@ -45,6 +40,9 @@ export const taskRepository = {
   },
   async update(id: string, data: UpdateData): Promise<Task> {
     return toTask(await prisma.task.update({ where: { id }, data }));
+  },
+  async setStatus(id: string, status: Status, completedAt: Date | null): Promise<Task> {
+    return toTask(await prisma.task.update({ where: { id }, data: { status, completedAt } }));
   },
   async delete(id: string): Promise<void> {
     await prisma.task.delete({ where: { id } });
