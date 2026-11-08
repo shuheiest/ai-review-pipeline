@@ -1,0 +1,40 @@
+name: ai-review
+
+# ci が成功した PR にだけ走る。pull_request_target は使わない（docs/spec.md 7.）
+on:
+  workflow_run:
+    workflows: [ci]
+    types: [completed]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  review:
+    # フォークからの PR では API キーを使わせない
+    if: >-
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.event == 'pull_request' &&
+      github.event.workflow_run.head_repository.full_name == github.repository
+    runs-on: ubuntu-latest
+    env:
+      PR: ${{ github.event.workflow_run.pull_requests[0].number }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: gh pr diff "$PR" > /tmp/pr.diff
+        env:
+          GH_TOKEN: ${{ github.token }}
+      - run: node scripts/ai-review.mts /tmp/pr.diff docs/spec.md > /tmp/review.md
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      - run: gh pr comment "$PR" --body-file /tmp/review.md
+        env:
+          GH_TOKEN: ${{ github.token }}
