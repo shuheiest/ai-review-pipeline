@@ -11,7 +11,7 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 # このリポジトリのルール
 
 - 仕様は `docs/spec.md`。動作を変えるときは先に仕様書を直す
-- 依存の向きは `routes → usecase → domain`、`usecase → repository`、`repository → domain`（型だけ）。`domain` は Hono・Prisma・Next.js を参照しない
+- 依存の向きは `routes → usecase → domain`、`usecase → repository`、`repository → domain`（型だけ）。`domain` からは何も参照しない
 - `docs/spec.md` と `docs/test-cases.md` は本人が書く。AIは編集せず、変更が必要なら提案だけする
 - lint のルール（200 行・複雑度 5・`any` 禁止）に `eslint-disable` で逃げない。超えそうなら関数やファイルを分ける
 - 画面は Hono の `hc` クライアント（`src/client/api.ts`）経由で API を呼ぶ。`fetch` を直接書かない
