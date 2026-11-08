@@ -1,0 +1,20 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+// SQLite は enum を持たないので status / priority は文字列。許される値は src/server/domain/task/task.ts で定義する
+model Task {
+  id          String    @id @default(cuid())
+  title       String
+  dueDate     String? // YYYY-MM-DD
+  status      String    @default("todo")
+  priority    String    @default("medium")
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  completedAt DateTime?
+}
