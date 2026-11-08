@@ -20,8 +20,8 @@
 | 項目 | 型 | 必須 | ルール |
 |---|---|---|---|
 | `id` | string | ○ | サーバーで自動採番 |
-| `title` | string | ○ | 前後の空白を除いて1〜50文字 |
-| `dueDate` | 日付（YYYY-MM-DD） | × | 正しい日付であること。作成時は過去の日付にできない。更新時は過去の日付も可 |
+| `title` | string | ○ | 前後の空白を除いて1〜50文字。文字数は見た目の文字（書記素）で数え、結合した絵文字も1つで1文字 |
+| `dueDate` | 日付（YYYY-MM-DD） | × | 正しい日付であること。作成時は過去の日付にできない。更新時は過去の日付も可。「過去」かどうかは日本時間で判定する |
 | `status` | `todo` / `in_progress` / `done` | ○ | 作成時は `todo`。変更は「3. ステータスの流れ」に従う |
 | `priority` | `low` / `medium` / `high` | ○ | 作成時の初期値は `medium` |
 | `createdAt` / `updatedAt` | 日時 | ○ | サーバーで自動設定 |
@@ -124,7 +124,7 @@ todo → done（着手せずに完了も可）
 │   │   │   └── *.test.ts
 │   │   ├── usecase/        # 作成・更新・ステータス変更などの処理
 │   │   ├── repository/     # データベースの読み書き（Prisma）
-│   │   └── routes/         # HonoのAPIの定義（Zodで入力チェック）
+│   │   └── routes/         # HonoのAPIの定義（domainのZodスキーマで入力チェック）
 │   ├── client/
 │   │   └── api.ts          # hc<AppType> で型付きのAPIクライアント
 │   └── components/         # 画面の部品
@@ -138,7 +138,7 @@ todo → done（着手せずに完了も可）
 └── README.md
 ```
 
-- `domain` は、データベースやHonoに依存しない純粋な関数だけにする（テストしやすく、AIレビューも仕様と照らし合わせやすい）
+- `domain` は、データベースやHonoに依存しない純粋な関数だけにする（テストしやすく、AIレビューも仕様と照らし合わせやすい）。現在時刻も読まず、「今日」は呼び出す側から受け取る
 - 依存の向きは `routes → usecase → domain`、`usecase → repository`。`domain` からは何も参照しない
 
 ## 10. 本人が手で書く部分
