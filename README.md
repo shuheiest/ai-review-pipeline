@@ -64,10 +64,9 @@ ANTHROPIC_API_KEY=... node scripts/ai-review.mts /tmp/pr.diff docs/spec.md
 
 | 段階 | PR | 何が起きたか |
 |---|---|---|
+| 1. 機械的なチェック | [#8](https://github.com/shuheiest/ai-review-pipeline/pull/8) | 複雑度 6 の関数を含む PR を出し、ci が lint で止まった。AI レビューは走らず（API は呼ばれない）、マージせずに閉じた。1 段階目が働くことを記録するための PR |
 | 2. AI レビュー | [#2](https://github.com/shuheiest/ai-review-pipeline/pull/2) | domain が現在時刻を読んでいて「純粋な関数だけ」に反すると指摘。「今日」を引数で受け取る形に直し、仕様書 9 節にも明記した。タイトルの文字数の数え方と「今日」のタイムゾーンが仕様書にないことも指摘され、本人が決めて仕様書 2 節に書いた |
 | 2. AI レビュー | [#4](https://github.com/shuheiest/ai-review-pipeline/pull/4) | 項目更新の経路から型のうえではステータスを変えられる余地があると指摘。repository の更新からステータスを外し、専用メソッドに分けた |
 | 2. AI レビュー | [#5](https://github.com/shuheiest/ai-review-pipeline/pull/5) | AGENTS.md の domain の制約が仕様書より緩いと指摘。仕様書と同じ文言に揃えた |
 | 2. AI レビュー | [#6](https://github.com/shuheiest/ai-review-pipeline/pull/6) | 存在しない id の 404 を画面で扱っていないと指摘。「タスクが見つかりません」の表示を足した |
 | 3. 人間のレビュー | [#4](https://github.com/shuheiest/ai-review-pipeline/pull/4) | AI が「仕様書に書かれていない依存」とした `repository → domain` を本人が認め、仕様書に追記する判断をした |
-
-1 の機械的なチェックで止まった PR はまだありません。lint のルール（200 行・複雑度 5・`any` 禁止）は手元でも同じコマンドで走らせているためです。
