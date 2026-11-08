@@ -12,18 +12,23 @@ import { STATUSES, type Status, type Task } from "@/server/domain/task/task";
 // GET / PATCH はどれも Task を返すので、その型を 1 つ取っておく
 type TaskResponse = Awaited<ReturnType<(typeof api)[":id"]["$get"]>>;
 
-export function TaskDetail({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = use(params);
-  const router = useRouter();
+// 1 件取得。見つからない（404）ときは missing を立てる
+function useTask(id: string) {
   const [task, setTask] = useState<Task | null>(null);
-  const [error, setError] = useState("");
-
+  const [missing, setMissing] = useState(false);
   useEffect(() => {
     api[":id"]
       .$get({ param: { id } })
-      .then((res: TaskResponse) => res.json())
-      .then(setTask);
+      .then(async (res: TaskResponse) => (res.ok ? setTask(await res.json()) : setMissing(true)));
   }, [id]);
+  return { task, setTask, missing };
+}
+
+export function TaskDetail({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params);
+  const router = useRouter();
+  const { task, setTask, missing } = useTask(id);
+  const [error, setError] = useState("");
 
   async function apply(pending: Promise<TaskResponse>) {
     const res = await pending;
@@ -36,10 +41,12 @@ export function TaskDetail({ params }: { params: Promise<{ id: string }> }) {
   const changeStatus = (status: Status) =>
     apply(api[":id"].status.$patch({ param: { id }, json: { status } }));
   async function remove() {
-    await api[":id"].$delete({ param: { id } });
+    const res = await api[":id"].$delete({ param: { id } });
+    if (!res.ok) return setError(await errorMessage(res));
     router.push("/");
   }
 
+  if (missing) return <NotFound />;
   if (!task) return <p className="description">読み込み中…</p>;
   return (
     <main>
@@ -81,6 +88,18 @@ export function TaskDetail({ params }: { params: Promise<{ id: string }> }) {
         <h2 className="section-title">削除</h2>
         <DeleteButton onConfirm={remove} />
       </section>
+    </main>
+  );
+}
+
+function NotFound() {
+  return (
+    <main>
+      <Link href="/" className="back">
+        ← 一覧へ戻る
+      </Link>
+      <h1 className="page-title">タスクが見つかりません</h1>
+      <p className="description">削除されたか、URL が間違っている可能性があります。</p>
     </main>
   );
 }

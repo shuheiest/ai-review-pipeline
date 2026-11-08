@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { api } from "@/client/api";
+import { api, errorMessage } from "@/client/api";
 import { PRIORITY_LABEL, STATUS_LABEL } from "@/client/labels";
 import { FilterSelect } from "@/components/FilterSelect";
 import { TaskTable } from "@/components/TaskTable";
@@ -12,13 +12,14 @@ export default function Page() {
   const [status, setStatus] = useState<Status | "">("");
   const [priority, setPriority] = useState<Priority | "">("");
   const [tasks, setTasks] = useState<Task[] | null>(null);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     const query = { status: status || undefined, priority: priority || undefined };
-    api
-      .$get({ query })
-      .then((res) => res.json())
-      .then(setTasks);
+    api.$get({ query }).then(async (res) => {
+      if (!res.ok) return setError(await errorMessage(res));
+      setTasks(await res.json());
+    });
   }, [status, priority]);
 
   return (
@@ -47,6 +48,11 @@ export default function Page() {
           onChange={setPriority}
         />
       </div>
+      {error && (
+        <p role="alert" className="alert">
+          {error}
+        </p>
+      )}
       <TaskTable tasks={tasks} />
     </main>
   );
