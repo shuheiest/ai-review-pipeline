@@ -1,10 +1,10 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { changeStatusInput, createTaskInput, listTasksQuery, updateTaskInput } from "./validation";
 
-// docs/test-cases.md 1-2〜1-4。今日を 2026-11-08（ローカル時刻の正午）に固定する
+// docs/test-cases.md 1-2〜1-4。今日を日本時間 2026-11-08 の正午（UTC 03:00）に固定する
 beforeEach(() => {
   vi.useFakeTimers();
-  vi.setSystemTime(new Date(2026, 10, 8, 12, 0, 0));
+  vi.setSystemTime(new Date("2026-11-08T03:00:00Z"));
 });
 afterEach(() => vi.useRealTimers());
 
@@ -29,6 +29,8 @@ describe("1-2. タイトル", () => {
     ["UT-16", "51 文字", "a".repeat(51), false],
     ["UT-17", "空白を除くと 50 文字", ` ${"a".repeat(50)} `, true],
     ["UT-19", "文字列でない値", 123, false],
+    ["UT-22", "絵文字 50 個（見た目の文字で数える）", "😀".repeat(50), true],
+    ["UT-23", "絵文字 51 個", "😀".repeat(51), false],
   ])("%s 作成：%s は %s", (_id, _label, title, expected) => {
     const result = create({ title });
 
@@ -69,6 +71,14 @@ describe("1-3. 期限（今日 = 2026-11-08）", () => {
     const result = create({ title: "t", dueDate });
 
     expect(result).toBe(expected);
+  });
+
+  it("UT-44 作成：UTC ではまだ 11-07 でも、日本時間で 11-08 になっていれば 11-08 は今日として通る", () => {
+    vi.setSystemTime(new Date("2026-11-07T15:30:00Z")); // 日本時間 2026-11-08 00:30
+
+    const result = create({ title: "t", dueDate: "2026-11-08" });
+
+    expect(result).toBe(true);
   });
 
   it("UT-34 作成：dueDate を省略しても通る", () => {

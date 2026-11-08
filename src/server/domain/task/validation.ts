@@ -7,14 +7,18 @@ const TITLE_MESSAGE = "タイトルは前後の空白を除いて1〜50文字で
 const DUE_DATE_MESSAGE = "期限は YYYY-MM-DD 形式の正しい日付で入力してください";
 const PAST_DUE_DATE_MESSAGE = "期限に過去の日付は指定できません";
 
-// ローカル日付の YYYY-MM-DD
+// 日本時間での今日（YYYY-MM-DD）。サーバーがどこで動いていても日本時間で判定する
+const JST_DATE = new Intl.DateTimeFormat("sv-SE", { timeZone: "Asia/Tokyo" });
 export function today(): string {
-  const d = new Date();
-  const pad = (n: number) => String(n).padStart(2, "0");
-  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+  return JST_DATE.format(new Date());
 }
 
-const title = z.string().trim().min(1, TITLE_MESSAGE).max(50, TITLE_MESSAGE);
+// 文字数は見た目の文字（コードポイント）で数える。絵文字 1 つは 1 文字
+const length = (s: string) => Array.from(s).length;
+const title = z
+  .string()
+  .trim()
+  .refine((s) => length(s) >= 1 && length(s) <= 50, TITLE_MESSAGE);
 
 // z.iso.date は 2026-02-30 のような存在しない日付も弾く
 const dueDate = z.iso.date(DUE_DATE_MESSAGE);
