@@ -38,8 +38,6 @@ export function TaskDetail({ params }: { params: Promise<{ id: string }> }) {
   }
 
   const save = (values: TaskFormValues) => apply(api[":id"].$patch({ param: { id }, json: values }));
-  const changeStatus = (status: Status) =>
-    apply(api[":id"].status.$patch({ param: { id }, json: { status } }));
   async function remove() {
     const res = await api[":id"].$delete({ param: { id } });
     if (!res.ok) return setError(await errorMessage(res));
@@ -48,6 +46,16 @@ export function TaskDetail({ params }: { params: Promise<{ id: string }> }) {
 
   if (missing) return <NotFound />;
   if (!task) return <p className="description">読み込み中…</p>;
+
+  // 許可されていない変更（409）は、API の値ではなく画面の言葉で伝える（docs/spec.md 3.）
+  const changeStatus = async (status: Status) => {
+    const res = await api[":id"].status.$patch({ param: { id }, json: { status } });
+    if (res.status === 409) {
+      const from = STATUS_LABEL[task.status];
+      return setError(`${from}から${STATUS_LABEL[status]}へは戻せません。まず進行中に戻してください`);
+    }
+    return apply(Promise.resolve(res));
+  };
   return (
     <main>
       <Link href="/" className="back">
