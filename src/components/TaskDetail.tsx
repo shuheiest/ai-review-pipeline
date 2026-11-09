@@ -57,7 +57,7 @@ export function TaskDetail({ params }: { params: Promise<{ id: string }> }) {
     return apply(Promise.resolve(res));
   };
   return (
-    <main>
+    <main className="narrow">
       <Link href="/" className="back">
         ← 一覧へ戻る
       </Link>
@@ -102,7 +102,7 @@ export function TaskDetail({ params }: { params: Promise<{ id: string }> }) {
 
 function NotFound() {
   return (
-    <main>
+    <main className="narrow">
       <Link href="/" className="back">
         ← 一覧へ戻る
       </Link>

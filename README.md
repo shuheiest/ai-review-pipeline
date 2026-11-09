@@ -51,7 +51,7 @@ ANTHROPIC_API_KEY=... node scripts/ai-review.mts /tmp/pr.diff docs/spec.md
 
 ## 画面
 
-一覧・作成・詳細の 3 画面です。見た目は[デジタル庁デザインシステム](https://design.digital.go.jp/)の公式トークン（色・書体・角丸・フォーカスの見え方）に合わせています。画面は `src/client/api.ts` の型付きクライアント経由で API を呼び、`fetch` を直接書きません。
+一覧・作成・詳細の 3 画面です。見た目は[デジタル庁デザインシステム](https://design.digital.go.jp/)の公式トークン（色・書体・角丸・フォーカスの見え方）に合わせています。ヘッダーのボタンでライト／ダークを切り替えられます（初期値は OS の設定、切り替えた結果はブラウザに保存）。画面は `src/client/api.ts` の型付きクライアント経由で API を呼び、`fetch` を直接書きません。
 
 ## 役割分担
 

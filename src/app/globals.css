@@ -1,28 +1,39 @@
-/* デジタル庁デザインシステム（DADS v2）のトークンを参照した値 */
+/* デジタル庁デザインシステム（DADS v2）のトークンを参照した値。light-dark() の左がライト、右がダーク */
 :root {
-  --key: #0017c1; /* blue-900 */
-  --key-hover: #00118f; /* blue-1000 */
-  --key-active: #000060; /* blue-1200 */
-  --key-50: #e8f1fe;
-  --key-100: #d9e6ff;
-  --key-200: #c5d7fb;
-  --text: #1a1a1a; /* solid-gray-900 */
-  --text-sub: #333333; /* solid-gray-800 */
-  --text-description: #666666; /* solid-gray-600 */
-  --text-placeholder: #767676; /* solid-gray-536 */
-  --text-disabled: #949494; /* solid-gray-420 */
-  --bg: #ffffff;
-  --bg-subtle: #f2f2f2; /* solid-gray-50 */
-  --border-field: #666666; /* solid-gray-600 */
-  --border-divider: #cccccc; /* solid-gray-200 */
-  --border-light: #e6e6e6; /* solid-gray-100 */
-  --error: #ec0000; /* red-800 */
-  --error-hover: #a90000; /* red-1000 */
-  --success: #197a4b; /* green-800 */
-  --warning: #c74700; /* orange-800 */
-  --visited: #8b008b; /* magenta-900 */
+  color-scheme: light;
+  --key: light-dark(#0017c1, #7096f8); /* blue-900 / blue-400 */
+  --key-hover: light-dark(#00118f, #9db7f9); /* blue-1000 / blue-300 */
+  --key-active: light-dark(#000060, #c5d7fb); /* blue-1200 / blue-200 */
+  --key-50: light-dark(#e8f1fe, #000060);
+  --key-200: light-dark(#c5d7fb, #00118f);
+  --on-key: light-dark(#ffffff, #1a1a1a); /* 塗りつぶしボタンの文字 */
+  --text: light-dark(#1a1a1a, #f2f2f2); /* solid-gray-900 / solid-gray-50 */
+  --text-sub: light-dark(#333333, #e6e6e6); /* solid-gray-800 / solid-gray-100 */
+  --text-description: light-dark(#666666, #b3b3b3); /* solid-gray-600 / solid-gray-300 */
+  --text-placeholder: light-dark(#767676, #949494);
+  --bg: light-dark(#ffffff, #1a1a1a);
+  --bg-subtle: light-dark(#f2f2f2, #333333); /* solid-gray-50 / solid-gray-800 */
+  --border-field: light-dark(#666666, #b3b3b3);
+  --border-divider: light-dark(#cccccc, #4d4d4d); /* solid-gray-200 / solid-gray-700 */
+  --border-light: light-dark(#e6e6e6, #333333);
+  --outline: light-dark(#000000, #ffffff); /* フォーカスの外枠・入力欄のホバー */
+  --error: light-dark(#ec0000, #ff5454); /* red-800 / red-500 */
+  --error-hover: light-dark(#a90000, #ff7171);
+  --error-bg: light-dark(#fdecec, #4a0000);
+  --success: light-dark(#197a4b, #51b883); /* green-800 / green-500 */
+  --success-bg: light-dark(#e6f5ec, #0e3b25);
+  --warning: light-dark(#c74700, #ff8d44); /* orange-800 / orange-500 */
+  --visited: light-dark(#8b008b, #e77ee7); /* magenta-900 / magenta-300 */
   --focus-yellow: #ffd43d; /* yellow-300。フォーカスの色は変えない */
   --radius: 0.5rem;
+}
+/* ダーク。<html data-theme> は layout.tsx の inline script と ThemeToggle が入れる */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+}
+:root[data-theme="dark"] .only-light,
+:root:not([data-theme="dark"]) .only-dark {
+  display: none;
 }
 
 *,
@@ -41,7 +52,7 @@ body {
 
 /* フォーカス：黒 4px の外枠と黄色 2px の内枠（DADS 共通） */
 :focus-visible {
-  outline: 4px solid #000;
+  outline: 4px solid var(--outline);
   outline-offset: 2px;
   box-shadow: 0 0 0 2px var(--focus-yellow);
 }
@@ -61,6 +72,10 @@ a:hover {
 
 /* 骨組み */
 .site-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
   border-bottom: 1px solid var(--border-divider);
   padding: 0 1rem;
 }
@@ -78,6 +93,11 @@ a:hover {
   max-width: 56rem;
   margin: 0 auto;
   padding: 1.5rem 1rem 4rem;
+}
+/* 入力が中心の画面は幅を絞って中央に置く */
+.narrow {
+  max-width: 32rem;
+  margin: 0 auto;
 }
 .page-head {
   display: flex;
@@ -135,21 +155,21 @@ a:hover {
 }
 .btn-primary {
   background: var(--key);
-  color: #fff;
+  color: var(--on-key);
 }
 .btn-primary:visited {
-  color: #fff;
+  color: var(--on-key);
 }
 .btn-primary:hover {
   background: var(--key-hover);
-  color: #fff;
+  color: var(--on-key);
   text-decoration: underline;
 }
 .btn-primary:active {
   background: var(--key-active);
 }
 .btn-outline {
-  background: #fff;
+  background: var(--bg);
   color: var(--key);
   border-color: currentColor;
 }
@@ -159,18 +179,18 @@ a:hover {
   text-decoration: underline;
 }
 .btn-danger {
-  background: #fff;
+  background: var(--bg);
   color: var(--error);
   border-color: currentColor;
 }
 .btn-danger:hover {
-  background: #fdecec;
+  background: var(--error-bg);
   color: var(--error-hover);
   text-decoration: underline;
 }
 .btn-danger-solid {
   background: var(--error);
-  color: #fff;
+  color: var(--on-key);
 }
 .btn-danger-solid:hover {
   background: var(--error-hover);
