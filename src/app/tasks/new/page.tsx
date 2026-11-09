@@ -17,7 +17,7 @@ export default function Page() {
   }
 
   return (
-    <main>
+    <main className="narrow">
       <Link href="/" className="back">
         ← 一覧へ戻る
       </Link>
